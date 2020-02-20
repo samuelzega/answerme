@@ -7,6 +7,7 @@
 var app = require('../app')
 var debug = require('debug')('server:server')
 var http = require('http')
+var roomController = require("../controllers/rooms")
 /**
  * Get port from environment and store in Express.
  */
@@ -30,6 +31,31 @@ server.listen(port, () => {
 })
 server.on('error', onError)
 server.on('listening', onListening)
+
+
+io.on('connection', socket => {
+  socket.on('create-room', payload => {
+    roomController.createOne(payload)
+    socket.emit('sample', { message: 'disini udah denger' })
+    console.log(payload)
+  })
+
+  socket.on('joinroom', payload => {
+    let login = roomController.createOne(payload)
+    if (login.name === payload.name) {
+      socket.emit('join-success', login)
+    } else {
+      socket.emit('join-failed', login.message)
+    }
+  })
+
+  socket.on("game-start", roomName => {
+
+    // let emitName = "datagame" + roomName
+    // socket.emit(emitName, dataGame)
+  })
+})
+
 
 /**
  * Normalize a port into a number, string, or false.
