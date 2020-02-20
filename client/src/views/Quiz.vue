@@ -42,14 +42,14 @@ export default {
             if (this.$store.state.answer === 'True') {
                 console.log('jawabanmu benar');
             } else {
-                console.log('bego jawaban lo salah');
+                console.log('jawaban lo salah');
             }
         },
         btnFalse(){
              if (this.$store.state.answer === 'False') {
                 console.log('jawabanmu benar');
             } else {
-                console.log('bego jawaban lo salah');
+                console.log('jawaban lo salah');
             }
         },
         questionCount() {
