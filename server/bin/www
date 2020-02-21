@@ -8,6 +8,7 @@ var app = require('../app')
 var debug = require('debug')('server:server')
 var http = require('http')
 var roomController = require("../controllers/rooms")
+var quizController = require("../controllers/apiquiz")
 /**
  * Get port from environment and store in Express.
  */
@@ -36,8 +37,8 @@ server.on('listening', onListening)
 io.on('connection', socket => {
   socket.on('create-room', payload => {
     roomController.createOne(payload)
-    socket.emit('sample', { message: 'disini udah denger' })
-    console.log(payload)
+    socket.emit('sample', { message: 'disini udah denger', roomname: payload.name })
+    //console.log(payload)
   })
 
   socket.on('joinroom', payload => {
@@ -49,10 +50,14 @@ io.on('connection', socket => {
     }
   })
 
-  socket.on("game-start", roomName => {
-
-    // let emitName = "datagame" + roomName
-    // socket.emit(emitName, dataGame)
+  socket.on("game-start", async  roomName => {
+    let emitName = "datagame" + roomName
+    quizController.apiquiz()
+      .then(({ data }) => {
+        socket.emit(emitName, data.results)
+      }).catch((err) => {
+        console.log(err)
+      });
   })
 })
 
