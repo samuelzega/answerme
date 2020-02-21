@@ -44,7 +44,7 @@
       />
       <el-button @click="addroom" type="info" round>Add room</el-button>
       <br />
-      <div style="margin-top:20vh;">
+      <!-- <div style="margin-top:20vh;">
         <b-card-group>
           <div v-for="(item, i) in allRooms" :key="i">
             <b-card
@@ -59,7 +59,7 @@
             </b-card>
           </div>
         </b-card-group>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -94,29 +94,41 @@ export default {
     },
     login() {
       localStorage.setItem('name', this.form.name)
-      this.show.inputName = false
-      this.show.buttonStart = false
-      this.show.rooms = true
-      this.$store.dispatch('getRooms')
-    },
-    addroom() {
-      this.$socket.emit('create-room', { name: this.form.roomname })
-      // localStorage.setItem("roomname", this.form.roomname);
-      console.log(this.form.roomname)
-      let listenRoom = 'datagame' + this.form.roomname
-      console.log(listenRoom)
-      setTimeout(() => {
-        this.$store.dispatch('getRooms')
-      }, 2000)
-    },
-    masukRoom(name) {
-      this.$socket.emit('game-start', name)
-      let listenRoom = 'datagame' + name
-      this.$socket.on(listenRoom, payload => {
-        console.log(payload)
-        console.log('datagame tambah roomname nih')
+      this.$socket.emit('create-room', { name: this.form.name })
+      this.$socket.on('join-game', payload => {
+        if (payload.message === 'room full') {
+          console.log(payload)
+        } else if (payload.message === 'start game') {
+          console.log(payload)
+
+          this.$router.push({
+            path: '/quiz'
+          })
+        } else if (payload.message === 'waiting for opponent') {
+          console.log(payload)
+        }
       })
     }
+    // addroom() {
+    //   this.$socket.emit('create-room', { name: this.form.roomname })
+    //   // localStorage.setItem("roomname", this.form.roomname);
+    //   console.log(this.form.roomname)
+    //   let listenRoom = 'datagame' + this.form.roomname
+    //   console.log(listenRoom)
+    //   setTimeout(() => {
+    //     this.$store.dispatch('getRooms')
+    //   }, 2000)
+    // },
+    // masukRoom(name) {
+    //   this.$socket.emit('game-start', name)
+    //   let listenRoom = 'datagame' + name
+    //   this.$socket.on(listenRoom, payload => {
+    //     this.$store.state
+    //   })
+    //   this.$router.push({
+    //     path: '/quiz'
+    //   })
+    // }
   },
   computed: {
     allRooms() {
