@@ -32,10 +32,10 @@ class RoomController {
         }
         Room.create(objInput)
             .then(result => {
-                console.log(result)
+                // console.log(result)
             })
             .catch(error => {
-                console.log(error)
+                // console.log(error)
             })
     }
     static deleteOne(req, res, next) {
