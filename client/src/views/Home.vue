@@ -11,30 +11,48 @@
       type="video/mp4"
     ></video>
     <div class="buttonPlay">
-      <el-button v-show="show.buttonStart" class="buttonNya" type="info" round
+      <el-button
+        @click="insertName"
+        v-show="show.buttonStart"
+        class="buttonNya"
+        type="info"
+        round
         >Enter the Game</el-button
       >
       <br />
 
       <input
         v-show="show.inputName"
+        v-model="form.name"
         type="text"
         autocomplete="off"
         placeholder="Please input your name"
         class="el-input__inner inputNya"
       />
       <br />
-      <el-button v-show="show.inputName" type="info" round>enter</el-button>
+      <el-button @click="login" v-show="show.inputName" type="info" round
+        >enter</el-button
+      >
     </div>
-    <div>
+    <div v-if="show.rooms">
+      <input
+        v-model="form.roomname"
+        type="text"
+        autocomplete="off"
+        placeholder="Please input your name"
+        class="el-input__inner inputNya"
+      />
+      <el-button @click="addroom" type="info" round>Add room</el-button>
+      <br />
       <div style="margin-top:20vh;">
         <b-card-group>
-          <div v-for="i in 5" :key="i">
+          <div v-for="(item, i) in allRooms" :key="i">
             <b-card
               bg-variant="dark"
-              style="border-radius:15px; margin-left:5vw; margin-top:5vh;"
+              style="border-radius:15px; margin-left:5vw; margin-top:5vh; cursor:pointer"
+              @click="masukRoom(item.name)"
               text-variant="white"
-              header="Room Name"
+              :header="item.name"
               class="text-center"
             >
               <b-card-text>Maybe add a password here</b-card-text>
@@ -58,15 +76,60 @@ export default {
   data() {
     return {
       form: {
-        name: ''
+        name: '',
+        roomname: ''
       },
       show: {
         inputName: false,
-        buttonStart: false
+        buttonStart: true,
+        rooms: false
       }
     }
   },
-  methods: {}
+  methods: {
+    insertName() {
+      this.show.inputName = true
+      this.show.buttonStart = false
+      this.show.rooms = false
+    },
+    login() {
+      localStorage.setItem('name', this.form.name)
+      this.show.inputName = false
+      this.show.buttonStart = false
+      this.show.rooms = true
+      this.$store.dispatch('getRooms')
+    },
+    addroom() {
+      this.$socket.emit('create-room', { name: this.form.roomname })
+      // localStorage.setItem("roomname", this.form.roomname);
+      console.log(this.form.roomname)
+      let listenRoom = 'datagame' + this.form.roomname
+      console.log(listenRoom)
+      setTimeout(() => {
+        this.$store.dispatch('getRooms')
+      }, 2000)
+    },
+    masukRoom(name) {
+      this.$socket.emit('game-start', name)
+      let listenRoom = 'datagame' + name
+      this.$socket.on(listenRoom, payload => {
+        //   this.$store.state.question = []
+        //   this.$store.state.answer = []
+        // for(let i=0; i<payload.length; i++) {
+        //   this.$store.state.question.push(payload[i].question)
+        //   this.$store.state.answer.push(payload[i].correct_answer)
+        // }
+        console.log(payload)
+        console.log('datagame tambah roomname nih')
+        this.$router.push('/quiz')
+      })
+    }
+  },
+  computed: {
+    allRooms() {
+      return this.$store.state.allRooms
+    }
+  }
 }
 </script>
 

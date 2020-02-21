@@ -17,20 +17,20 @@ export default {
     return {
       roomname: null,
       copyname: null
-    };
+    }
   },
   methods: {
     addroom() {
       // this.$socket.emit("create-room", { name: this.roomname });
-      this.$socket.emit("game-start", this.roomname);
+      this.$socket.emit('game-start', this.roomname)
       // localStorage.setItem("roomname", this.roomname);
-      console.log(this.roomname);
-      let listenRoom = "datagame" + this.roomname;
-      console.log(listenRoom);
+      console.log(this.roomname)
+      let listenRoom = 'datagame' + this.roomname
+      console.log(listenRoom)
       this.$socket.on(listenRoom, payload => {
-        console.log(payload[0]);
-        console.log("datagame tambah roomname nih");
-      });
+        console.log(payload[0])
+        console.log('datagame tambah roomname nih')
+      })
     }
   },
   mounted() {
