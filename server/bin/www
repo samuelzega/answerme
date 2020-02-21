@@ -7,8 +7,8 @@
 var app = require('../app')
 var debug = require('debug')('server:server')
 var http = require('http')
-var roomController = require("../controllers/rooms")
-var quizController = require("../controllers/apiquiz")
+var roomController = require('../controllers/rooms')
+var quizController = require('../controllers/apiquiz')
 /**
  * Get port from environment and store in Express.
  */
@@ -33,34 +33,55 @@ server.listen(port, () => {
 server.on('error', onError)
 server.on('listening', onListening)
 
+let player = []
 
 io.on('connection', socket => {
   socket.on('create-room', payload => {
-    roomController.createOne(payload)
-    socket.emit('sample', { message: 'disini udah denger', roomname: payload.name })
-    //console.log(payload)
-  })
-
-  socket.on('joinroom', payload => {
-    let login = roomController.createOne(payload)
-    if (login.name === payload.name) {
-      socket.emit('join-success', login)
+    // roomController.createOne(payload)
+    if (player.length >= 2) {
+      socket.emit('join-game', {
+        message: 'room full'
+      })
     } else {
-      socket.emit('join-failed', login.message)
+      player.push({
+        name: payload.name,
+        score: 0
+      })
+      if (player.length === 2) {
+        io.emit('join-game', {
+          message: 'start game',
+          player: player
+        })
+      } else {
+        socket.emit('join-game', {
+          message: 'waiting for opponent',
+          player: player
+        })
+      }
     }
   })
 
-  socket.on("game-start", async  roomName => {
-    let emitName = "datagame" + roomName
-    quizController.apiquiz()
-      .then(({ data }) => {
-        socket.emit(emitName, data.results)
-      }).catch((err) => {
-        console.log(err)
-      });
-  })
-})
+  // socket.on('joinroom', payload => {
+  //   let login = roomController.createOne(payload)
+  //   if (login.name === payload.name) {
+  //     socket.emit('join-success', login)
+  //   } else {
+  //     socket.emit('join-failed', login.message)
+  //   }
+  // })
 
+  // socket.on('game-start', async (roomName, playerName) => {
+  //   let emitName = 'datagame' + roomName
+  //   quizController
+  //     .apiquiz()
+  //     .then(({ data }) => {
+  //       socket.emit(emitName, data.results)
+  //     })
+  //     .catch(err => {
+  //       console.log(err)
+  //     })
+  // })
+})
 
 /**
  * Normalize a port into a number, string, or false.
