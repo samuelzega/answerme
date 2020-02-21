@@ -9,17 +9,18 @@
 
     <div>
       <h1 class="display-1">{{ countDown }}</h1>
+      <h3>{{ result }}</h3>
       <button type="button" @click="questionCount" class="btn btn-success">
         <h2>Start</h2>
       </button>
 
       <div class="card container">
         <div class="card-body">
-          <h2 v-html="$store.state.question"></h2>
+          <h2 v-html="question"></h2>
         </div>
       </div>
 
-      {{ $store.state.answer }}
+      <!-- {{ $store.state.answer }} -->
       <div class="btnAnswer">
         <button class="btn btn-warning btnWrong" @click="btnTrue">true</button>
         <button class="btn btn-info btnRight" @click="btnFalse">false</button>
@@ -34,10 +35,21 @@ export default {
   data() {
     return {
       countDown: 15,
-      data: []
+      data: [],
+      count: 0,
+      question: '',
+      good: 0,
+      bad: 0,
+      result: '',
     }
   },
-  created() {},
+  created() {
+    this.$store.dispatch('getQuiz')
+
+    console.log(this.$store.state.question)
+    console.log(this.$store.state.answer)
+
+  },
   methods: {
     countDownTimer() {
       if (this.countDown > 0) {
@@ -47,28 +59,42 @@ export default {
         }, 1000)
       }
       if (this.countDown === 0) {
-        this.countDown = 15
+        this.countDown = 'Thanks for Playing'
+        this.result = `
+                      ${this.good} Good Answer,
+                      ${this.bad} Bad Answer
+                      `
       }
     },
 
     btnTrue() {
-      if (this.$store.state.answer === 'True') {
+      if (this.$store.state.answer[this.count] === 'True') {
         console.log('jawabanmu benar')
+        this.good += 1
       } else {
         console.log('jawaban lo salah')
+        this.bad += 1
       }
     },
     btnFalse() {
-      if (this.$store.state.answer === 'False') {
+      if (this.$store.state.answer[this.count] === 'False') {
         console.log('jawabanmu benar')
+        this.good += 1
       } else {
         console.log('jawaban lo salah')
+        this.bad += 1
       }
     },
     questionCount() {
-      this.$store.dispatch('getQuiz')
+      this.countDown = 15
+      this.count = 0
+      this.result = ''
+      // this.$store.dispatch('getQuiz')
+      this.question = this.$store.state.question[0]
       let questionOne = setInterval(() => {
-        this.$store.dispatch('getQuiz')
+        // this.$store.dispatch('getQuiz')
+        this.count += 1
+        this.question = this.$store.state.question[this.count]
       }, 5000)
       setTimeout(() => {
         clearInterval(questionOne)
@@ -99,15 +125,15 @@ export default {
   pointer-events: none;
 }
 .btn-success {
-  margin-top: 33vh;
+  margin-top: 30vh;
 }
 .card {
-  width: 800px;
-  height: 150px;
+  width: 1200px;
+  height: 200px;
   font-family: 'Krona One';
   margin-bottom: 50px;
   border-color: crimson;
-  margin-top: 3vh;
+  margin-top: 1vh;
 
   border-style: dotted;
   border-width: thick;
@@ -116,6 +142,10 @@ export default {
 h1 {
   color: chartreuse;
   font-weight: 800;
+}
+h3 {
+  color: chartreuse;
+  font-weight: 700;
 }
 
 .btnRight {
@@ -134,7 +164,6 @@ h1 {
 
 .btnAnswer {
   /* width: 10vw; */
-  margin-top: 12vh;
   font-family: 'Krona One', 'Special Elite';
 }
 </style>

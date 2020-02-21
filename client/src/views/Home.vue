@@ -113,8 +113,15 @@ export default {
       this.$socket.emit('game-start', name)
       let listenRoom = 'datagame' + name
       this.$socket.on(listenRoom, payload => {
+        //   this.$store.state.question = []
+        //   this.$store.state.answer = []
+        // for(let i=0; i<payload.length; i++) {
+        //   this.$store.state.question.push(payload[i].question)
+        //   this.$store.state.answer.push(payload[i].correct_answer)
+        // }
         console.log(payload)
         console.log('datagame tambah roomname nih')
+        this.$router.push('/quiz')
       })
     }
   },
