@@ -10,6 +10,7 @@
     <div>
       <h1 class="display-1">{{ countDown }}</h1>
       <h3>{{ result }}</h3>
+      <h3>{{ hasil }}</h3>
       <button type="button" @click="questionCount" class="btn btn-success">
         <h2>Start</h2>
       </button>
@@ -41,6 +42,7 @@ export default {
       good: 0,
       bad: 0,
       result: '',
+      hasil: ''
     }
   },
   created() {
@@ -48,7 +50,6 @@ export default {
 
     console.log(this.$store.state.question)
     console.log(this.$store.state.answer)
-
   },
   methods: {
     countDownTimer() {
@@ -64,6 +65,24 @@ export default {
                       ${this.good} Good Answer,
                       ${this.bad} Bad Answer
                       `
+        this.$socket.emit('game-finish', {
+          role: this.$store.state.role,
+          result: this.good
+        })
+
+        this.$socket.on('winner', payload => {
+          console.log(payload, ' ini data player semua')
+          this.hasil = `
+                      ${payload[0].name} = ${payload[0].score} ,
+                      ${payload[1].name} = ${payload[1].score} 
+                      `
+        })
+
+        setTimeout(() => {
+          this.$router.push({
+            path: '/'
+          })
+        }, 10000)
       }
     },
 

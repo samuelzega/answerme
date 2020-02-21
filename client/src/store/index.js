@@ -10,7 +10,8 @@ export default new Vuex.Store({
   state: {
     question: '',
     answer: '',
-    allRooms: null
+    allRooms: null,
+    role: ''
   },
   mutations: {
     SET_QUESTION(state, payload) {
@@ -21,6 +22,9 @@ export default new Vuex.Store({
     },
     SET_ALLROOMS(state, payload) {
       state.allRooms = payload
+    },
+    SET_ROLE(state, payload) {
+      state.role = payload
     }
   },
   actions: {
@@ -33,10 +37,10 @@ export default new Vuex.Store({
           console.log(data)
           let que = []
           let ans = []
-        for(let i=0; i<data.length; i++) {
-          que.push(data[i].question)
-          ans.push(data[i].correct_answer)
-        }
+          for (let i = 0; i < data.length; i++) {
+            que.push(data[i].question)
+            ans.push(data[i].correct_answer)
+          }
 
           context.commit('SET_QUESTION', que)
           context.commit('SET_ANSWER', ans)
