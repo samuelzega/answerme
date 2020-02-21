@@ -1,18 +1,12 @@
 <template>
   <div id="app">
-<<<<<<< HEAD
-    <div id="nav">
+    <!-- <div id="nav">
       <input type="text" placeholder="room" v-model="roomname" />
       <button v-on:click.prevent="addroom">submit</button>
-=======
-    <!-- <div id="nav"> -->
-    <!-- <input type="text" placeholder="room" v-model="roomname" />
-      <button v-on:click="addroom">submit</button>
->>>>>>> 8b290b3ef9bae6842a4c7343744bf67ab3ce5c96
       <router-link to="/">Home</router-link>|
       <router-link to="/about">About</router-link>|
       <router-link to="/quiz">Quiz</router-link>
-    </div>-->
+    </div> -->
     <router-view />
   </div>
 </template>
@@ -21,7 +15,6 @@ export default {
   name: 'app',
   data() {
     return {
-<<<<<<< HEAD
       roomname: null,
       copyname: null
     };
@@ -51,31 +44,6 @@ export default {
     // this.$socket.on("join-failed", data => {
     //   // console.log(data);
     // });
-=======
-      roomname: null
-    }
-  },
-  methods: {
-    addroom() {
-      let name = 'game-start'
-      this.$socket.emit(name, 'roomname')
-      this.$socket.emit('create-room', { name: this.roomname })
-    }
-  },
-  mounted() {
-    this.$socket.on('sample', data => {
-      console.log(data.message)
-    })
-
-    this.$socket.on('join-succes', data => {
-      console.log(data)
-    })
-    this.$socket.on('join-failed', data => {
-      console.log(data)
-    })
-
-    this.$socket.on('datagame' + 'roomname', payload => {})
->>>>>>> 8b290b3ef9bae6842a4c7343744bf67ab3ce5c96
   }
 }
 </script>
