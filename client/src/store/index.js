@@ -31,8 +31,15 @@ export default new Vuex.Store({
       })
         .then(({ data }) => {
           console.log(data)
-          context.commit('SET_QUESTION', data.results[0].question)
-          context.commit('SET_ANSWER', data.results[0].correct_answer)
+          let que = []
+          let ans = []
+        for(let i=0; i<data.length; i++) {
+          que.push(data[i].question)
+          ans.push(data[i].correct_answer)
+        }
+
+          context.commit('SET_QUESTION', que)
+          context.commit('SET_ANSWER', ans)
         })
         .catch(error => {
           console.log(error)
