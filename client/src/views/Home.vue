@@ -100,13 +100,18 @@ export default {
           console.log(payload)
         } else if (payload.message === 'start game') {
           console.log(payload)
-
-          this.$router.push({
-            path: '/quiz'
-          })
+          this.$store.commit('SET_ROLE', payload.status)
         } else if (payload.message === 'waiting for opponent') {
+          this.$store.commit('SET_ROLE', payload.status)
           console.log(payload)
         }
+        console.log('ini role player nya', this.$store.state.role)
+      })
+
+      this.$socket.on('start-game', payload => {
+        this.$router.push({
+          path: '/quiz'
+        })
       })
     }
     // addroom() {

@@ -45,19 +45,36 @@ io.on('connection', socket => {
     } else {
       player.push({
         name: payload.name,
-        score: 0
+        score: null
       })
       if (player.length === 2) {
-        io.emit('join-game', {
+        socket.emit('join-game', {
           message: 'start game',
-          player: player
+          player: player,
+          status: 'player2'
         })
+        io.emit('start-game', 'start-game')
       } else {
         socket.emit('join-game', {
           message: 'waiting for opponent',
-          player: player
+          player: player,
+          status: 'player1'
         })
       }
+    }
+  })
+
+  socket.on('game-finish', payload => {
+    console.log('masuk sini', payload.role)
+
+    if (payload.role === 'player1') {
+      player[0].score = payload.result
+    } else if (payload.role === 'player2') {
+      player[1].score = payload.result
+    }
+    if (player[1].score !== null && player[0].score !== null) {
+      io.emit('winner', player)
+      player = []
     }
   })
 
